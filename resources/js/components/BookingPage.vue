@@ -6,6 +6,7 @@
                 Create a Booking
             </button>
         </div>
+
 <!--        <div class="w-full border-b-5 border-gray-200 shadow"></div>-->
 
         <div class="flex items-end gap-4 pl-5 py-4 bg-gray-100">
@@ -75,26 +76,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-gray-200">
-                        <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap">
-                            First Booking
-                        </th>
-                        <td class="px-6 py-4">
-                            Yabba
-                        </td>
-                        <td class="px-6 py-4">
-                            Dabba
-                        </td>
-                        <td class="px-6 py-4">
-                            Doo
-                        </td>
-                        <td class="px-6 py-4">
-                            Bruce
-                        </td>
-                        <td class="px-6 py-4">
-                            Wayne
-                        </td>
-                    </tr>
+                <tr v-for="b in bookings" :key="b.id" class="odd:bg-white even:bg-gray-50">
+                    <th class="px-6 py-4 font-medium text-black whitespace-nowrap">
+                        {{ b.title }}
+                    </th>
+                    <td class="px-6 py-4">{{ b.description }}</td>
+                    <td class="px-6 py-4">{{ new Date(b.start_time).toLocaleString() }}</td>
+                    <td class="px-6 py-4">{{ new Date(b.end_time).toLocaleString() }}</td>
+                    <td class="px-6 py-4">{{ b.client?.name || b.client_id }}</td>
+                    <td class="px-6 py-4">{{ b.user?.name || b.user_id }}</td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -141,18 +132,24 @@ export default {
     data() {
         return {
             showModal: false,
-            booking: {
-                title: '',
-                description: '',
-                start_time: '',
-                end_time: ''
-            },
-            message: '',
-            filter_after: '',
-            filter_before: '',
+            bookings: [],
+            weekDate: '',
+            booking: { title: '', description: '', start_time: '', end_time: '', user_id: 1, client_id: 1 },
+            message: ''
         }
     },
+    mounted() {
+        this.loadWeek();
+    },
     methods: {
+        async loadWeek() {
+            try {
+                const res = await fetch('/api/bookings?week_date=' + this.weekDate);
+                this.bookings = await res.json();
+            } catch (err) {
+                console.error(err);
+            }
+        },
         async submitBooking() {
             try {
                 const res = await fetch('/api/bookings', {
@@ -160,14 +157,26 @@ export default {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(this.booking)
                 });
-                const data = await res.json();
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw err;
+                }
                 this.message = 'Booking created successfully!';
-                this.booking = { title: '', description: '', start_time: '', end_time: '' };
+                this.booking = {
+                    title: '',
+                    description: '',
+                    start_time: '',
+                    end_time: '',
+                    user_id: 1,
+                    client_id: 1
+                };
+                this.showModal = false;
+                await this.loadWeek(); // refresh table
             } catch (err) {
-                console.error(err);
                 this.message = 'Error creating booking';
+                console.error(err);
             }
-        }
+        },
     }
 }
 </script>
