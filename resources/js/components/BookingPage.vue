@@ -1,33 +1,44 @@
-<template id="body">
-    <div class="flex justify-center" id="card">
-        <form @submit.prevent="submitBooking" class="space-y-4 bg-red-800">
-            <h1 class="">Create a Booking</h1>
-            <div>
-                <label class="block">Title:</label>
-                <input v-model="booking.title" type="text" class="border p-2 w-full bg-black"/>
-            </div>
-
-            <div>
-                <label class="block bg-red-800">Description:</label>
-                <textarea v-model="booking.description" class="border p-2 w-full"></textarea>
-            </div>
-
-            <div class="rows gap-4">
+<template class="content-center" id="body">
+    <div class="grid-3 content-center w-full">
+        <div class="flex justify-between items-center py-10 px-10 bg-black text-white">
+            <div class="text-4xl font-bold antialiased">Booking Page</div>
+            <button @click="showModal = !showModal"  class="bg-white text-black text-2xl font-bold antialiased px-4 py-2 rounded hover:bg-gray-200">
+                Create a Booking
+            </button>
+        </div>
+        <div class="w-full border-b-5 border-gray-900"></div>
+        <div v-if="showModal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
+            <div class="flex justify-center mt-15 border-2 w-100 p-4 rounded border-gray-700 shadow mx-auto bg-white" id="card">
+            <form @submit.prevent="submitBooking" class="space-y-4">
+                <h3 class=" text-2xl font-bold antialiased">Create a Booking</h3>
                 <div>
-                    <label>Start Time:</label>
-                    <input v-model="booking.start_time" type="datetime-local" class="border p-2 bg-black white"/>
+                    <label class="">Title:</label>
+                    <input v-model="booking.title" type="text" class="border p-2 w-full"/>
                 </div>
+
                 <div>
-                    <label>End Time:</label>
-                    <input v-model="booking.end_time" type="datetime-local" class="border p-2"/>
+                    <label class="block">Description:</label>
+                    <textarea v-model="booking.description" class="border p-2 w-full"></textarea>
                 </div>
+
+                <div class="">
+                    <div>
+                        <label>Start Time:</label>
+                        <input v-model="booking.start_time" type="datetime-local" class="border p-2"/>
+                    </div>
+                    <div class="mt-2">
+                        <label>End Time:</label>
+                        <input v-model="booking.end_time" type="datetime-local" class="border p-2"/>
+                    </div>
+                </div>
+
+                <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded">Create</button>
+            </form>
+
+            <div v-if="message" class="mt-4 p-2 bg-green-200 text-green-800 rounded">
+                {{ message }}
             </div>
-
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Create Booking</button>
-        </form>
-
-        <div v-if="message" class="mt-4 p-2 bg-green-200 text-green-800 rounded">
-            {{ message }}
+        </div>
         </div>
     </div>
 </template>
@@ -37,6 +48,7 @@
 export default {
     data() {
         return {
+            showModal: false,
             booking: {
                 title: '',
                 description: '',
@@ -67,14 +79,4 @@ export default {
 </script>
 
 <style scoped>
-#card {
-    width: 400px;
-    margin-top: 50px;
-    margin: auto;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    background-color: #1a202c;
-    color: white;
-}
 </style>
