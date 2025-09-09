@@ -34,7 +34,7 @@
                 <tbody>
                     <tr class="bg-gray-200">
                         <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap">
-                            Apple MacBook Pro 17"
+                            First Booking
                         </th>
                         <td class="px-6 py-4">
                             Yabba
