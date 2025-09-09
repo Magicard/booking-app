@@ -6,40 +6,89 @@
                 Create a Booking
             </button>
         </div>
-        <div class="w-full border-b-5 border-gray-900"></div>
+        <div class="w-full border-b-5 border-gray-200 shadow"></div>
+        <div class="relative overflow-x-auto">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Booking title
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Description
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Start Time
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            End Time
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Client
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            User
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-gray-200">
+                        <th scope="row" class="px-6 py-4 font-medium text-black whitespace-nowrap">
+                            Apple MacBook Pro 17"
+                        </th>
+                        <td class="px-6 py-4">
+                            Yabba
+                        </td>
+                        <td class="px-6 py-4">
+                            Dabba
+                        </td>
+                        <td class="px-6 py-4">
+                            Doo
+                        </td>
+                        <td class="px-6 py-4">
+                            Bruce
+                        </td>
+                        <td class="px-6 py-4">
+                            Wayne
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         <div v-if="showModal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
             <div class="flex justify-center mt-15 border-2 w-100 p-4 rounded border-gray-700 shadow mx-auto bg-white" id="card">
-            <form @submit.prevent="submitBooking" class="space-y-4">
-                <h3 class=" text-2xl font-bold antialiased">Create a Booking</h3>
-                <div>
-                    <label class="">Title:</label>
-                    <input v-model="booking.title" type="text" class="border p-2 w-full"/>
-                </div>
-
-                <div>
-                    <label class="block">Description:</label>
-                    <textarea v-model="booking.description" class="border p-2 w-full"></textarea>
-                </div>
-
-                <div class="">
+                <form @submit.prevent="submitBooking" class="space-y-4">
+                    <h3 class=" text-2xl font-bold antialiased">Create a Booking</h3>
                     <div>
-                        <label>Start Time:</label>
-                        <input v-model="booking.start_time" type="datetime-local" class="border p-2"/>
+                        <label class="">Title:</label>
+                        <input v-model="booking.title" type="text" class="border p-2 w-full"/>
                     </div>
-                    <div class="mt-2">
-                        <label>End Time:</label>
-                        <input v-model="booking.end_time" type="datetime-local" class="border p-2"/>
+
+                    <div>
+                        <label class="block">Description:</label>
+                        <textarea v-model="booking.description" class="border p-2 w-full"></textarea>
                     </div>
+
+                    <div class="">
+                        <div>
+                            <label>Start Time:</label>
+                            <input v-model="booking.start_time" type="datetime-local" class="border p-2"/>
+                        </div>
+                        <div class="mt-2">
+                            <label>End Time:</label>
+                            <input v-model="booking.end_time" type="datetime-local" class="border p-2"/>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="bg-black text-white px-4 py-2 rounded antialiased font-bold shadow hover:bg-gray-800">CREATE</button>
+                </form>
+
+                <div v-if="message" class="mt-4 p-2 bg-green-200 text-green-800 rounded">
+                    {{ message }}
                 </div>
-
-                <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded">Create</button>
-            </form>
-
-            <div v-if="message" class="mt-4 p-2 bg-green-200 text-green-800 rounded">
-                {{ message }}
             </div>
         </div>
-        </div>
+
     </div>
 </template>
 
