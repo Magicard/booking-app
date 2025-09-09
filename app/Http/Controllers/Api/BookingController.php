@@ -41,6 +41,10 @@ class BookingController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param  \App\Http\Requests\StoreBookingRequest  $request
+     *
+     * @apiResource App\Http\Resources\BookingResource
+     * @apiResponse 201
      */
     public function store(StoreBookingRequest $request)
     {
@@ -52,6 +56,10 @@ class BookingController extends Controller
 
     /**
      * Display the specified resource.
+     * @param  \App\Models\Booking  $booking
+     *
+     * @apiResource App\Http\Resources\BookingResource
+     * @apiResponse 200
      */
     public function show(Booking $booking)
     {
@@ -60,6 +68,9 @@ class BookingController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param  \App\Models\Booking  $booking
+     *
+     * @apiResponse 204
      */
     public function destroy(Booking $booking)
     {

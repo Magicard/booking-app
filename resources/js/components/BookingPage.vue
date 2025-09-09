@@ -145,56 +145,51 @@ export default {
             message: ''
         }
     },
+    methods: {
+            async loadWeek() {
+                try {
+                    const res = await fetch('/api/bookings?week=' + this.weekDate, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const result = await res.json();
+                    this.bookings = result.data;
+
+                } catch (err) {
+                    console.error(err);
+                }
+            },
+            async submitBooking() {
+                try {
+                    const res = await fetch('/api/bookings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(this.booking)
+                    });
+                    if (!res.ok) {
+                        const err = await res.json();
+                        throw err;
+                    }
+                    this.message = 'Booking created successfully!';
+                    this.booking = {
+                        title: '',
+                        description: '',
+                        start_time: '',
+                        end_time: '',
+                        user_id: 1,
+                        client_id: 1
+                    };
+                    this.showModal = false;
+                    await this.loadWeek(); // refresh table
+                } catch (err) {
+                    this.message = 'Error creating booking';
+                    console.error(err);
+                }
+            },
+        },
     mounted() {
         this.loadWeek();
     },
-    methods: {
-        async loadWeek() {
-            try {
-                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                fetch('/api/bookings', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': token
-                    },
-                    body: JSON.stringify(this.booking)
-                });
-
-                this.bookings = await res.json();
-            } catch (err) {
-                console.error(err);
-            }
-        },
-        async submitBooking() {
-            try {
-                const res = await fetch('/api/bookings', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(this.booking)
-                });
-                if (!res.ok) {
-                    const err = await res.json();
-                    throw err;
-                }
-                this.message = 'Booking created successfully!';
-                this.booking = {
-                    title: '',
-                    description: '',
-                    start_time: '',
-                    end_time: '',
-                    user_id: 1,
-                    client_id: 1
-                };
-                this.showModal = false;
-                await this.loadWeek(); // refresh table
-            } catch (err) {
-                this.message = 'Error creating booking';
-                console.error(err);
-            }
-        },
-    }
 }
 </script>
 

@@ -4,13 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookingController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('booking');
 });
 
 Route::get('/booking-test', function () {
     return view('booking');
 });
 
-// Booking API routes
-Route::get('/api/bookings', [BookingController::class, 'index']);
-Route::post('/api/bookings', [BookingController::class, 'store']);
+Route::prefix('api')->group(function () {
+    Route::get('/bookings', [BookingController::class, 'index']);
+    Route::post('/bookings', [BookingController::class, 'store']);
+});
