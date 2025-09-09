@@ -2,7 +2,7 @@
     <body class="font-sans">
     <div class="grid-3 content-center w-full">
         <div id="page-content" class="transition-{filter} duration-300" :class="{'blur-sm': showModal}">
-            <div class="flex justify-between items-center py-10 px-10 bg-linear-to-r from-blue-500 to-blue-300 text-white">
+            <div class="flex justify-between items-center py-10 px-10 animated-background bg-linear-to-r from-blue-500 to-blue-300 text-white">
                 <div class="text-4xl font-black uppercase text-shadow-lg text-shadow-sky-100/20">Booking App</div>
                 <button @click="showModal = !showModal"  class="bg-white  text-blue-400 text-shadow-lg text-shadow-sky-100/30 uppercase text-lg  font-black px-4 py-2 rounded hover:bg-gray-100 ">
                     Create a Booking
@@ -95,34 +95,35 @@
 
 
         <div v-if="showModal" id="modal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center shadow-lg" @click.self="showModal = false">
-            <div class="flex justify-center mt-15 border-3 shadow w-100 p-4 rounded-xl border-blue-400 shadow mx-auto bg-white" id="card">
+            <div class="flex justify-center mt-15 shadow w-100 p-4 rounded-xl border-blue-400 shadow mx-auto bg-linear-to-r from-blue-500 to-blue-300 animated-background" id="card">
                 <form @submit.prevent="submitBooking" class="space-y-4 antialiased">
-                    <h3 class=" text-2xl font-bold antialiased text-blue-400">NEW BOOKING</h3>
-                    <div class="w-full border-b-5 border-blue-400"></div>
-                    <div>
-                        <label class="font-bold">Title</label>
-                        <input v-model="booking.title" type="text" class="border rounded p-2 w-full"/>
+                    <h3 class=" text-2xl font-bold antialiased text-gray-100">NEW BOOKING</h3>
+                    <div class="w-full border-b-5 border-gray-100"></div>
+
+                    <div class="text-white">
+                        <label class="font-bold">Title*</label>
+                        <input v-model="booking.title" type="text" class="border border-gray-100 rounded p-2 w-full"/>
                     </div>
 
-                    <div>
-                        <label class="font-bold">Description</label>
-                        <input v-model="booking.description" type="text" class="border rounded p-2 w-full"/>
+                    <div class="text-white">
+                        <label class="font-bold">Description*</label>
+                        <input v-model="booking.description" type="text" class="border border-gray-100 rounded p-2 w-full"/>
                     </div>
 
-                    <div >
+                    <div class="text-white">
                         <div>
-                            <label class="font-bold">Start Time </label>
-                            <input v-model="booking.start_time" type="datetime-local" class="border p-2 text-gray-700"/>
+                            <label class="font-bold">Start Time* </label>
+                            <input v-model="booking.start_time" type="datetime-local" class="border border-gray-100 p-2 text-blue-100"/>
                         </div>
                         <div class="mt-2">
-                            <label class="font-bold">End Time </label>
-                            <input v-model="booking.end_time" type="datetime-local" class="border p-2 ml-2 text-gray-700"/>
+                            <label class="font-bold">End Time* </label>
+                            <input v-model="booking.end_time" type="datetime-local" class="border border-gray-100 p-2 ml-2 text-blue-100"/>
                         </div>
                     </div>
-                    <div v-if="message" class="mt-4 p-2 bg-gray-200 text-black rounded">
+                    <div v-if="message" class="mt-4 p-2 bg-gray-100 text-blue-500 rounded">
                         {{ message }}
                     </div>
-                    <button type="submit" class="bg-blue-400 text-white w-full py-2 rounded antialiased font-bold shadow hover:bg-blue-300">SUBMIT</button>
+                    <button type="submit" class="bg-gray-100 text-blue-400 w-full py-2 rounded antialiased font-bold shadow hover:bg-gray-200">SUBMIT</button>
                 </form>
 
 
@@ -150,7 +151,17 @@ export default {
     methods: {
         async loadWeek() {
             try {
-                const res = await fetch('/api/bookings?week_date=' + this.weekDate);
+                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': token
+                    },
+                    body: JSON.stringify(this.booking)
+                });
+
                 this.bookings = await res.json();
             } catch (err) {
                 console.error(err);
