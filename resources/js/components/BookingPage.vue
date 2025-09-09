@@ -6,7 +6,22 @@
                 Create a Booking
             </button>
         </div>
-        <div class="w-full border-b-5 border-gray-200 shadow"></div>
+<!--        <div class="w-full border-b-5 border-gray-200 shadow"></div>-->
+
+        <div class="flex items-end gap-4 pl-5 py-4 bg-gray-100">
+            <div class="flex flex-col">
+                <input v-model="weekDate" id="week_date" type="date" class="border p-1.75 rounded font-bold antialiased">
+            </div>
+            <button @click="loadWeek"
+                    class="bg-black text-white px-4 py-2 rounded font-bold hover:bg-gray-800">
+               FILTER
+            </button>
+            <button @click="resetWeek"
+                    class="bg-gray-300 text-black px-4 py-2 rounded font-bold hover:bg-gray-400 ml-auto mr-5">
+                RESET
+            </button>
+        </div>
+
         <div class="relative overflow-x-auto">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
@@ -83,6 +98,7 @@
                 </tbody>
             </table>
         </div>
+
         <div v-if="showModal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
             <div class="flex justify-center mt-15 border-2 w-100 p-4 rounded border-gray-700 shadow mx-auto bg-white" id="card">
                 <form @submit.prevent="submitBooking" class="space-y-4">
@@ -116,7 +132,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -132,7 +147,9 @@ export default {
                 start_time: '',
                 end_time: ''
             },
-            message: ''
+            message: '',
+            filter_after: '',
+            filter_before: '',
         }
     },
     methods: {
