@@ -2,9 +2,9 @@
     <body class="font-sans">
     <div class="grid-3 content-center w-full">
         <div id="page-content" class="transition-{filter} duration-300" :class="{'blur-sm': showModal}">
-            <div class="flex justify-between items-center py-10 px-10 bg-blue-400 text-white">
-                <div class="text-4xl font-black uppercase ">Booking Page</div>
-                <button @click="showModal = !showModal"  class="bg-white  text-blue-400 uppercase text-lg  font-black px-4 py-2 rounded hover:bg-gray-100">
+            <div class="flex justify-between items-center py-10 px-10 bg-linear-to-r from-blue-500 to-blue-300 text-white">
+                <div class="text-4xl font-black uppercase text-shadow-lg text-shadow-sky-100/20">Booking App</div>
+                <button @click="showModal = !showModal"  class="bg-white  text-blue-400 text-shadow-lg text-shadow-sky-100/30 uppercase text-lg  font-black px-4 py-2 rounded hover:bg-gray-100 ">
                     Create a Booking
                 </button>
             </div>
@@ -94,7 +94,7 @@
         </div>
 
 
-        <div v-if="showModal" id="modal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
+        <div v-if="showModal" id="modal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center shadow-lg" @click.self="showModal = false">
             <div class="flex justify-center mt-15 border-3 shadow w-100 p-4 rounded-xl border-blue-400 shadow mx-auto bg-white" id="card">
                 <form @submit.prevent="submitBooking" class="space-y-4 antialiased">
                     <h3 class=" text-2xl font-bold antialiased text-blue-400">NEW BOOKING</h3>
