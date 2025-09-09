@@ -1,31 +1,33 @@
-<template class="content-center" id="body">
+<template>
+    <body class="font-sans">
     <div class="grid-3 content-center w-full">
-        <div class="flex justify-between items-center py-10 px-10 bg-black text-white">
-            <div class="text-4xl font-bold antialiased">Booking Page</div>
-            <button @click="showModal = !showModal"  class="bg-white text-black text-2xl font-bold antialiased px-4 py-2 rounded hover:bg-gray-200">
-                Create a Booking
-            </button>
-        </div>
-
-<!--        <div class="w-full border-b-5 border-gray-200 shadow"></div>-->
-
-        <div class="flex items-end gap-4 pl-5 py-4 bg-gray-100">
-            <div class="flex flex-col">
-                <input v-model="weekDate" id="week_date" type="date" class="border p-1.75 rounded font-bold antialiased">
+        <div id="page-content" class="transition-{filter} duration-300" :class="{'blur-sm': showModal}">
+            <div class="flex justify-between items-center py-10 px-10 bg-blue-400 text-white">
+                <div class="text-4xl font-black uppercase ">Booking Page</div>
+                <button @click="showModal = !showModal"  class="bg-white  text-blue-400 uppercase text-lg  font-black px-4 py-2 rounded hover:bg-gray-100">
+                    Create a Booking
+                </button>
             </div>
-            <button @click="loadWeek"
-                    class="bg-black text-white px-4 py-2 rounded font-bold hover:bg-gray-800">
-               FILTER
-            </button>
-            <button @click="resetWeek"
-                    class="bg-gray-300 text-black px-4 py-2 rounded font-bold hover:bg-gray-400 ml-auto mr-5">
-                RESET
-            </button>
-        </div>
 
-        <div class="relative overflow-x-auto">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
+            <!--        <div class="w-full border-b-5 border-gray-200 shadow"></div>-->
+
+            <div class="flex items-end gap-4 pl-5 py-4 bg-gray-900">
+                <div class="flex flex-col">
+                    <input v-model="weekDate" id="week_date" type="date" class="border text-gray-600 p-1.75 rounded antialiased bg-gray-50">
+                </div>
+                <button @click="loadWeek"
+                        class="bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-gray-800">
+                    FILTER
+                </button>
+                <button @click="resetWeek"
+                        class="bg-red-400 text-red-100 px-4 py-2 rounded font-bold hover:bg-red-300 ml-auto mr-5">
+                    RESET
+                </button>
+            </div>
+
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                    <thead class="text-xs text-gray-900 uppercase dark:text-gray-400">
                     <tr>
                         <th scope="col" class="px-6 py-3">
                             Booking title
@@ -74,56 +76,60 @@
                             </div>
                         </th>
                     </tr>
-                </thead>
-                <tbody>
-                <tr v-for="b in bookings" :key="b.id" class="odd:bg-white even:bg-gray-50">
-                    <th class="px-6 py-4 font-medium text-black whitespace-nowrap">
-                        {{ b.title }}
-                    </th>
-                    <td class="px-6 py-4">{{ b.description }}</td>
-                    <td class="px-6 py-4">{{ new Date(b.start_time).toLocaleString() }}</td>
-                    <td class="px-6 py-4">{{ new Date(b.end_time).toLocaleString() }}</td>
-                    <td class="px-6 py-4">{{ b.client?.name || b.client_id }}</td>
-                    <td class="px-6 py-4">{{ b.user?.name || b.user_id }}</td>
-                </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <tr v-for="b in bookings" :key="b.id" class="odd:bg-white even:bg-gray-90">
+                        <th class="px-6 py-4 font-medium text-black whitespace-nowrap">
+                            {{ b.title }}
+                        </th>
+                        <td class="px-6 py-4">{{ b.description }}</td>
+                        <td class="px-6 py-4">{{ new Date(b.start_time).toLocaleString() }}</td>
+                        <td class="px-6 py-4">{{ new Date(b.end_time).toLocaleString() }}</td>
+                        <td class="px-6 py-4">{{ b.client?.name || b.client_id }}</td>
+                        <td class="px-6 py-4">{{ b.user?.name || b.user_id }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div v-if="showModal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
-            <div class="flex justify-center mt-15 border-2 w-100 p-4 rounded border-gray-700 shadow mx-auto bg-white" id="card">
-                <form @submit.prevent="submitBooking" class="space-y-4">
-                    <h3 class=" text-2xl font-bold antialiased">Create a Booking</h3>
+
+        <div v-if="showModal" id="modal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center" @click.self="showModal = false">
+            <div class="flex justify-center mt-15 border-3 shadow w-100 p-4 rounded-xl border-blue-400 shadow mx-auto bg-white" id="card">
+                <form @submit.prevent="submitBooking" class="space-y-4 antialiased">
+                    <h3 class=" text-2xl font-bold antialiased text-blue-400">NEW BOOKING</h3>
+                    <div class="w-full border-b-5 border-blue-400"></div>
                     <div>
-                        <label class="">Title:</label>
-                        <input v-model="booking.title" type="text" class="border p-2 w-full"/>
+                        <label class="font-bold">Title</label>
+                        <input v-model="booking.title" type="text" class="border rounded p-2 w-full"/>
                     </div>
 
                     <div>
-                        <label class="block">Description:</label>
-                        <textarea v-model="booking.description" class="border p-2 w-full"></textarea>
+                        <label class="font-bold">Description</label>
+                        <input v-model="booking.description" type="text" class="border rounded p-2 w-full"/>
                     </div>
 
-                    <div class="">
+                    <div >
                         <div>
-                            <label>Start Time:</label>
-                            <input v-model="booking.start_time" type="datetime-local" class="border p-2"/>
+                            <label class="font-bold">Start Time </label>
+                            <input v-model="booking.start_time" type="datetime-local" class="border p-2 text-gray-700"/>
                         </div>
                         <div class="mt-2">
-                            <label>End Time:</label>
-                            <input v-model="booking.end_time" type="datetime-local" class="border p-2"/>
+                            <label class="font-bold">End Time </label>
+                            <input v-model="booking.end_time" type="datetime-local" class="border p-2 ml-2 text-gray-700"/>
                         </div>
                     </div>
-
-                    <button type="submit" class="bg-black text-white px-4 py-2 rounded antialiased font-bold shadow hover:bg-gray-800">CREATE</button>
+                    <div v-if="message" class="mt-4 p-2 bg-gray-200 text-black rounded">
+                        {{ message }}
+                    </div>
+                    <button type="submit" class="bg-blue-400 text-white w-full py-2 rounded antialiased font-bold shadow hover:bg-blue-300">SUBMIT</button>
                 </form>
 
-                <div v-if="message" class="mt-4 p-2 bg-green-200 text-green-800 rounded">
-                    {{ message }}
-                </div>
+
             </div>
         </div>
     </div>
+    </body>
 </template>
 
 

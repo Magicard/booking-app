@@ -5,7 +5,15 @@
     "./resources/**/*.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+        fontFamily: {
+            sans: ['Roboto', 'Arial', 'sans-serif'],
+        },
+    },
   },
   plugins: [],
+    variants: {
+    extend: {},
+        backgroundOpacity: ['active'],
+    }
 }
