@@ -19,12 +19,11 @@ class WeekFilter implements Filter
         // $value is the date sent from frontend
         $date = CarbonImmutable::parse($value);
 
-        $start = $date->startOfWeek(CarbonInterface::MONDAY);
-        $end   = $date->endOfWeek(CarbonInterface::SUNDAY);
+        $start = $date->startOfWeek();
+        $end   = $date->endOfWeek();
 
-        $query->where(function ($q) use ($start, $end) {
-            $q->whereBetween('start_time', [$start, $end])
-                ->orWhereBetween('end_time', [$start, $end]);
-        });
+        // Grab all bookings that overlap the week
+        $query->where('end_time', '>=', $start)
+            ->where('start_time', '<=', $end);
     }
 }

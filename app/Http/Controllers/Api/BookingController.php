@@ -51,7 +51,7 @@ class BookingController extends Controller
         $booking = new Booking($request->validated());
         $booking->save();
 
-        return new BookingResource($booking);
+        return BookingResource::make($booking);
     }
 
     /**

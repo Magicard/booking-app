@@ -79,10 +79,10 @@
                     </thead>
                     <tbody>
                     <tr v-for="b in bookings" :key="b.id" class="odd:bg-white even:bg-gray-90">
-                        <th class="px-6 py-4 font-medium text-black whitespace-nowrap">
+                        <th class="px-6 py-4 font-medium text-gray-800 whitespace-nowrap">
                             {{ b.title }}
                         </th>
-                        <td class="px-6 py-4">{{ b.description }}</td>
+                        <td class="px-6 py-4 max-w-[200px] truncate text-ellipsis">{{ b.description }}</td>
                         <td class="px-6 py-4">{{ new Date(b.start_time).toLocaleString() }}</td>
                         <td class="px-6 py-4">{{ new Date(b.end_time).toLocaleString() }}</td>
                         <td class="px-6 py-4">{{ b.client?.name || b.client_id }}</td>
@@ -108,6 +108,16 @@
                     <div class="text-white">
                         <label class="font-bold">Description*</label>
                         <input v-model="booking.description" type="text" class="border border-gray-100 rounded p-2 w-full"/>
+                    </div>
+
+                    <div class="text-white">
+                        <label class="font-bold">Client ID*</label>
+                        <input v-model="booking.client_id" type="text" class="border border-gray-100 rounded p-2 w-full"/>
+                    </div>
+
+                    <div class="text-white">
+                        <label class="font-bold">User ID*</label>
+                        <input v-model="booking.user_id" type="text" class="border border-gray-100 rounded p-2 w-full"/>
                     </div>
 
                     <div class="text-white">
@@ -163,7 +173,9 @@ export default {
                 try {
                     const res = await fetch('/api/bookings', {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
                         body: JSON.stringify(this.booking)
                     });
                     if (!res.ok) {

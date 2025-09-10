@@ -10,8 +10,3 @@ Route::get('/', function () {
 Route::get('/booking-test', function () {
     return view('booking');
 });
-
-Route::prefix('api')->group(function () {
-    Route::get('/bookings', [BookingController::class, 'index']);
-    Route::post('/bookings', [BookingController::class, 'store']);
-});

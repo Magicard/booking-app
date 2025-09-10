@@ -2,8 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Booking;
+use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreBookingRequest extends FormRequest
 {
@@ -25,11 +30,40 @@ class StoreBookingRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'text', 'max:25000'],
-            'user_id' => ['nullable', 'integer', 'exists:users,id'],
-            'client_id' => ['nullable', 'integer', 'exists:clients,id'],
-            'start_time' => ['required', 'date',Rule::when($this->filled('end_time'), ['before_or_equal:end_date'])],
-            'end_time' => ['required', 'date', 'after_or_equal:start_time', Rule::when($this->filled('start_date'), ['after_or_equal:start_date'])],
+            'description' => ['nullable', 'string', 'max:25000'],
+            'user_id' => ['nullable', 'integer'],
+            'client_id' => ['nullable', 'integer'],
+            'start_time' => ['required', 'date', 'before_or_equal:end_time'],
+            'end_time' => ['required', 'date', 'after_or_equal:start_time'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            if (! $this->user_id || ! $this->start_time || ! $this->end_time) {
+                return;
+            }
+
+            // Force the dates to Carbon for correct comparison
+            $start = Carbon::parse($this->start_time);
+            $end = Carbon::parse($this->end_time);
+
+            $overlapExists = Booking::query()
+                ->where('user_id', $this->user_id)
+                ->where(function ($query) use ($start, $end) {
+                    $query->whereBetween('start_time', [$start, $end])
+                        ->orWhereBetween('end_time', [$start, $end])
+                        ->orWhere(function ($q) use ($start, $end) {
+                            $q->where('start_time', '<=', $start)
+                                ->where('end_time', '>=', $end);
+                        });
+                })
+                ->exists();
+
+            if ($overlapExists) {
+                $validator->errors()->add('start_time', 'This user already has a booking that overlaps with the given time range.');
+            }
+        });
     }
 }
