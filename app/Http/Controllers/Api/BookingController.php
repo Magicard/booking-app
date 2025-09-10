@@ -79,12 +79,6 @@ class BookingController extends Controller
         return response()->noContent();
     }
 
-    /**
-     * Create a report of bookings in CSV format.
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
-     */
     public function exportCsv(Request $request)
     {
         $bookings = QueryBuilder::for(Booking::class)

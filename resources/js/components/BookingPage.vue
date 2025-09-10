@@ -209,7 +209,6 @@ export default {
             }
         },
 
-
         async exportCsv() {
             try {
                 const res = await fetch(`/api/bookings/export?filter[week]=${this.weekDate}&sort=${this.sortField}`);
