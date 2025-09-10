@@ -19,8 +19,13 @@
                         class="bg-gray-700 text-white px-4 py-2 rounded font-bold hover:bg-gray-800">
                     FILTER
                 </button>
+
+                <button @click="exportCsv" class="bg-green-500 text-green-100 rounded font-bold px-4 py-2 rounded ml-auto hover:bg-green-300">
+                    GENERATE REPORT
+                </button>
+
                 <button @click="resetWeek"
-                        class="bg-red-400 text-red-100 px-4 py-2 rounded font-bold hover:bg-red-300 ml-auto mr-5">
+                        class="bg-red-400 text-red-100 px-4 py-2 rounded font-bold hover:bg-red-300  mr-5">
                     RESET
                 </button>
             </div>
@@ -93,7 +98,6 @@
             </div>
         </div>
 
-
         <div v-if="showModal" id="modal" class="fixed inset-0 bg-opacity-50 flex items-center justify-center shadow-lg" @click.self="showModal = false">
             <div class="flex justify-center mt-15 shadow w-100 p-4 rounded-xl border-blue-400 shadow mx-auto bg-linear-to-r from-blue-500 to-blue-300 animated-background" id="card">
                 <form @submit.prevent="submitBooking" class="space-y-4 antialiased">
@@ -156,24 +160,24 @@ export default {
         }
     },
     methods: {
-            async loadWeek() {
-                try {
-                    const res = await fetch('/api/bookings?filter[week]=' + this.weekDate, {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json' }
-                    });
-                    const result = await res.json();
-                    this.bookings = result.data;
+        async loadWeek() {
+            try {
+                const res = await fetch('/api/bookings?filter[week]=' + this.weekDate, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                const result = await res.json();
+                this.bookings = result.data;
 
-                } catch (err) {
-                    console.error(err);
-                }
-            },
+            } catch (err) {
+                console.error(err);
+            }
+        },
 
-            resetWeek() {
-                this.weekDate = ''; // clear the date filter
-                this.loadWeek();    // reload table without filter
-            },
+        resetWeek() {
+            this.weekDate = ''; // clear the date filter
+            this.loadWeek();    // reload table without filter
+        },
 
         async submitBooking() {
             try {
@@ -200,7 +204,29 @@ export default {
                 console.error(err);
                 this.message = 'Unexpected error occurred';
             }
-        }
+        },
+
+        async exportCsv() {
+            try {
+                const res = await fetch(`/api/bookings/export?filter[week]=${this.weekDate}`);
+                if (!res.ok) throw new Error('Failed to export CSV');
+
+                const blob = await res.blob();
+                this.downloadBlob(blob, `bookings_${new Date().toISOString().slice(0, 19)}.csv`);
+            } catch (err) {
+                console.error(err);
+                this.message = 'Error exporting CSV';
+            }
+        },
+
+        downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        },
 
     },
     mounted() {

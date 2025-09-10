@@ -78,4 +78,53 @@ class BookingController extends Controller
 
         return response()->noContent();
     }
+
+    /**
+     * Create a report of bookings in CSV format.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function exportCsv(Request $request)
+    {
+        $bookings = QueryBuilder::for(Booking::class)
+            ->allowedFilters([
+                AllowedFilter::custom('week', new WeekFilter()),
+                'user_id',
+                'client_id'
+            ])
+            ->allowedSorts(['start_time', 'end_time', 'created_at'])
+            ->with('user', 'client')
+            ->get();
+
+        $filename = "bookings_" . now()->format('Y-m-d_H-i-s') . ".csv";
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ];
+
+        $columns = ['ID', 'Title', 'Description', 'Start Time', 'End Time', 'User', 'Client'];
+
+        $callback = function() use ($bookings, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($bookings as $b) {
+                fputcsv($file, [
+                    $b->id,
+                    $b->title,
+                    $b->description,
+                    $b->start_time,
+                    $b->end_time,
+                    $b->user?->name ?? $b->user_id,
+                    $b->client?->name ?? $b->client_id,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }
