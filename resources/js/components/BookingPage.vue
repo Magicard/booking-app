@@ -41,7 +41,7 @@
                             Description
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
+                            <div class="flex items-center cursor-pointer" @click="sortBy('start_time')">
                                 <span>Start Time</span>
                                 <a href="#" class="ml-1">
                                     <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@
                             </div>
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            <div class="flex items-center">
+                            <div class="flex items-center cursor-pointer" @click="sortBy('end_time')">
                                 <span>End Time</span>
                                 <a href="#" class="ml-1">
                                     <a href="#"><svg class="w-3 h-3 ms-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
@@ -156,19 +156,22 @@ export default {
             bookings: [],
             weekDate: '',
             booking: { title: '', description: '', start_time: '', end_time: '', user_id: 1, client_id: 1 },
-            message: ''
+            message: '',
+            sortField: '',
+            sortOrder: 'asc',
         }
     },
     methods: {
         async loadWeek() {
             try {
-                const res = await fetch('/api/bookings?filter[week]=' + this.weekDate, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
+                let url = `/api/bookings?filter[week]=${this.weekDate}`;
+                if (this.sortField) {
+                    const prefix = this.sortOrder === 'desc' ? '-' : '';
+                    url += `&sort=${prefix}${this.sortField}`;
+                }
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
                 const result = await res.json();
                 this.bookings = result.data;
-
             } catch (err) {
                 console.error(err);
             }
@@ -206,11 +209,11 @@ export default {
             }
         },
 
+
         async exportCsv() {
             try {
-                const res = await fetch(`/api/bookings/export?filter[week]=${this.weekDate}`);
+                const res = await fetch(`/api/bookings/export?filter[week]=${this.weekDate}&sort=${this.sortField}`);
                 if (!res.ok) throw new Error('Failed to export CSV');
-
                 const blob = await res.blob();
                 this.downloadBlob(blob, `bookings_${new Date().toISOString().slice(0, 19)}.csv`);
             } catch (err) {
@@ -227,6 +230,16 @@ export default {
             a.click();
             URL.revokeObjectURL(url);
         },
+
+        sortBy(field) {
+            if (this.sortField === field) {
+                this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortField = field;
+                this.sortOrder = 'asc';
+            }
+            this.loadWeek();
+        }
 
     },
     mounted() {
