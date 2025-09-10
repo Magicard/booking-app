@@ -79,6 +79,12 @@ class BookingController extends Controller
         return response()->noContent();
     }
 
+    /**
+     * Export bookings as CSV.
+     * @queryParam filter[week] date Filter bookings by week containing the given date (format: YYYY-MM-DD). Example: 2024-10-14
+     *
+     * @apiResponse 200
+     */
     public function exportCsv(Request $request)
     {
         $bookings = QueryBuilder::for(Booking::class)
