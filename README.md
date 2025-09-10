@@ -63,15 +63,25 @@ php artisan serve
 
 http://127.0.0.1:8000 in your browser.
 #
-### 8. API Endpoints
+### 8. Features
+- Core Booking Functionality: Create and manage bookings associated with users and clients.
+- Prevent Overlapping Bookings: Users cannot have overlapping bookings.
+- Filter by Week: API supports fetching bookings for a specific calendar week.
+- Download Report: Export bookings as a CSV file for the selected week.
+- Sortable Table Columns: Sort bookings by start and end time in the frontend.
+- API Descriptions: Endpoints include descriptions for potential API documentation.
+#
+### 9. API Endpoints
 GET /api/bookings – List all bookings
 
 GET /api/bookings?filter[week]=YYYY-MM-DD – Filter bookings by week
 
 POST /api/bookings – Create a new booking
+
+GET /api/bookings/export?filter[week]=YYYY-MM-DD – Download CSV report of bookings for a given week
 #
 ### Notes
 - Ensure the database is running before migrating.
 - Reset database if needed:
 php artisan migrate:fresh --seed
-- Vue frontend automatically fetches bookings and supports filtering by week.
+- Vue frontend automatically fetches bookings, supports week filtering, sorting, and CSV download.
