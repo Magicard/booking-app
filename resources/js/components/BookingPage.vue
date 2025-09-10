@@ -158,7 +158,7 @@ export default {
     methods: {
             async loadWeek() {
                 try {
-                    const res = await fetch('/api/bookings?week=' + this.weekDate, {
+                    const res = await fetch('/api/bookings?filter[week]=' + this.weekDate, {
                         method: 'GET',
                         headers: { 'Accept': 'application/json' }
                     });
@@ -169,6 +169,12 @@ export default {
                     console.error(err);
                 }
             },
+
+            resetWeek() {
+                this.weekDate = ''; // clear the date filter
+                this.loadWeek();    // reload table without filter
+            },
+
             async submitBooking() {
                 try {
                     const res = await fetch('/api/bookings', {

@@ -88,6 +88,7 @@ it('retrieves bookings for a given week', function () {
 
     $response = $this->getJson('/api/bookings?filter[week]=2025-08-05');
 
+    // Verify only the in-week booking is returned
     $response->assertStatus(200)
         ->assertJsonFragment([
             'id' => $inWeek->id,
