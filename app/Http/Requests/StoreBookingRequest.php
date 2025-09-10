@@ -31,8 +31,8 @@ class StoreBookingRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:25000'],
-            'user_id' => ['nullable', 'integer'],
-            'client_id' => ['nullable', 'integer'],
+            'user_id' => ['nullable', 'integer', Rule::exists('users', 'id')],
+            'client_id' => ['required', 'integer', Rule::exists('clients', 'id')],
             'start_time' => ['required', 'date', 'before_or_equal:end_time'],
             'end_time' => ['required', 'date', 'after_or_equal:start_time'],
         ];

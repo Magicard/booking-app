@@ -175,36 +175,34 @@ export default {
                 this.loadWeek();    // reload table without filter
             },
 
-            async submitBooking() {
-                try {
-                    const res = await fetch('/api/bookings', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(this.booking)
-                    });
-                    if (!res.ok) {
-                        const err = await res.json();
-                        throw err;
-                    }
-                    this.message = 'Booking created successfully!';
-                    this.booking = {
-                        title: '',
-                        description: '',
-                        start_time: '',
-                        end_time: '',
-                        user_id: 1,
-                        client_id: 1
-                    };
-                    this.showModal = false;
-                    await this.loadWeek(); // refresh table
-                } catch (err) {
-                    this.message = 'Error creating booking';
-                    console.error(err);
+        async submitBooking() {
+            try {
+                const res = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(this.booking)
+                });
+                const result = await res.json();
+
+                if (!res.ok) {
+                    this.message = result.errors ? Object.values(result.errors).flat().join(', ') : 'Error creating booking';
+                    return;
                 }
-            },
-        },
+
+                this.message = 'Booking created successfully!';
+                this.booking = { title: '', description: '', start_time: '', end_time: '', user_id: 1, client_id: 1 };
+                this.showModal = false;
+                await this.loadWeek();
+            } catch (err) {
+                console.error(err);
+                this.message = 'Unexpected error occurred';
+            }
+        }
+
+    },
     mounted() {
         this.loadWeek();
     },
